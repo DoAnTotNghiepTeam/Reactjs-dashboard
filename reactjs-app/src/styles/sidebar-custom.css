@@ -1,0 +1,33 @@
+/* Đổi màu icon khi hover hoặc chọn menu item */
+.ant-menu-item:hover .ant-menu-item-icon,
+.ant-menu-item-active .ant-menu-item-icon,
+.ant-menu-item-selected .ant-menu-item-icon {
+    color: #fff !important;
+    transition: color 0.2s;
+}
+
+
+.ant-menu-item,
+.ant-menu-item-selected,
+.ant-menu-item-active {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 700 !important;
+    /* font-size: 14px !important; */
+    color: #66789c !important;
+    padding: 28px 28px !important;
+    transition: background 0.2s, color 0.2s;
+}
+
+/* Tăng độ ưu tiên cho màu hover và chọn */
+.ant-menu-light .ant-menu-item:hover,
+.ant-menu-light .ant-menu-item-active,
+.ant-menu-light .ant-menu-item-selected,
+.ant-menu-vertical .ant-menu-item:hover,
+.ant-menu-vertical .ant-menu-item-active,
+.ant-menu-vertical .ant-menu-item-selected,
+.ant-menu-item:hover,
+.ant-menu-item-active,
+.ant-menu-item-selected {
+    background-color: #1677ff !important;
+    color: #fff !important;
+}

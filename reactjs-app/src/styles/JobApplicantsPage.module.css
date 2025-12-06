@@ -1,0 +1,395 @@
+.jobApplicants {
+  padding: 24px;
+  font-family: "Inter", sans-serif;
+  background: #f9fafb;
+  min-height: 100vh;
+  color: #111827;
+}
+
+/* Back button */
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #2563eb;
+  font-weight: 500;
+  font-size: 14px;
+  background: #eef2ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.backBtn:hover {
+  background: #e0e7ff;
+  transform: translateX(-3px);
+}
+
+/* Title */
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 28px;
+  color: #111827;
+  letter-spacing: -0.5px;
+}
+
+/* Table */
+.applicantsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.applicantsTable th {
+  background: #f3f4f6;
+  text-align: left;
+  font-weight: 600;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.applicantsTable td {
+  padding: 14px 16px;
+  border-top: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #111827;
+  vertical-align: middle;
+}
+
+.applicantsTable tr:hover td {
+  background: #f9fafb;
+}
+
+/* Links */
+.cvLink {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+}
+
+.cvLink::after {
+  content: "";
+  display: block;
+  height: 2px;
+  background: #2563eb;
+  width: 0;
+  transition: width 0.2s ease;
+}
+
+.cvLink:hover::after {
+  width: 100%;
+}
+
+/* Status select */
+.statusSelect {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fff;
+  transition: all 0.2s;
+}
+
+.statusSelect:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+/* ApplicantDetailPage.module.css */
+.datetimeInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.datetimeInput:hover {
+  border-color: #888;
+}
+
+.datetimeInput:focus {
+  border-color: #4f46e5; /* Indigo-600 */
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+
+/* Note input */
+.noteInput {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fff;
+  resize: vertical;
+  min-height: 40px;
+  max-height: 120px;
+  transition: all 0.2s;
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  height:20px;
+  width: 210px;
+}
+
+.noteInput::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.noteInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Buttons */
+.saveBtn {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+.saveBtn:hover {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.detailBtn {
+  background: linear-gradient(90deg, #10b981, #059669);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.detailBtn:hover {
+  background: linear-gradient(90deg, #059669, #047857);
+  transform: translateY(-1px);
+}
+
+/* Update form */
+.updateForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.updateForm:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+/* Table cell form stretch */
+.applicantsTable td .updateForm {
+  align-items: stretch;
+}
+
+/* Empty & loading states */
+.jobApplicants p {
+  font-size: 15px;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Stats bar */
+.statsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px 0;
+}
+.statItem {
+  background: #f6fbff;
+  border: 1px solid rgba(32, 94, 255, 0.06);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: #1f2937;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02) inset;
+}
+
+/* Filter bar */
+.filterBar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterBar label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+.filterBar select {
+  min-width: 160px;
+  height: 38px;
+  padding: 8px 10px;
+  outline: none;
+  font-size: 14px;
+   background: #d7e0e8;
+  border: 1px solid rgba(32, 94, 255, 0.06);
+  border-radius: 999px;
+  color: #1f2937;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02) inset;
+}
+
+
+.filterBar select:focus {
+  box-shadow: 0 0 0 3px rgba(32, 94, 255, 0.08);
+}
+/* Nút update trong bảng */
+.updateBtn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.updateBtn:hover {
+  background: #0056b3;
+}
+
+/* Modal overlay (nền mờ) */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Hộp modal */
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+.modalContent h2 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Form trong modal */
+.statusSelect,
+.noteInput,
+.datetimeInput {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.interviewForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Hàng nút trong modal */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.modalActions button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s ease;
+}
+
+.modalActions button:first-child {
+  background: #ccc;
+  color: #333;
+}
+.modalActions button:first-child:hover {
+  background: #aaa;
+}
+
+.modalActions button:last-child {
+  background: #28a745;
+  color: white;
+}
+.modalActions button:last-child:hover {
+  background: #1e7e34;
+}
+
+/* Hiệu ứng mở modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.topBar {
+  display: flex;
+  justify-content: space-between; /* stats bên trái, filter bên phải */
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 10px; /* khoảng cách giữa 2 bên */
+}
+
+
+

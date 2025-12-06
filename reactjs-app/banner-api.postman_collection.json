@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "Banner API",
+    "_postman_id": "f7db4b7b-44e1-4e3d-b0d3-fake-id",
+    "description": "Collection test API Banner",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Banner (with file)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "companyName", "value": "công ty của huy", "type": "text" },
+            { "key": "companyEmail", "value": "huyle@gmail.com", "type": "text" },
+            { "key": "companyPhone", "value": "0765233951", "type": "text" },
+            { "key": "companyWebsite", "value": "http://localhost:5173/banneremployer", "type": "text" },
+            { "key": "bannerTitle", "value": "bestt", "type": "text" },
+            { "key": "bannerLink", "value": "http://localhost:5173/banneremployer", "type": "text" },
+            { "key": "bannerType", "value": "Vip", "type": "text" },
+            { "key": "startDate", "value": "2025-09-18", "type": "text" },
+            { "key": "endDate", "value": "2025-09-19", "type": "text" },
+            { "key": "description", "value": "hehehheh", "type": "text" },
+            { "key": "bannerImage", "type": "file", "src": "C:/Users/YourName/Pictures/test-banner.jpg" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/banners",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "banners"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

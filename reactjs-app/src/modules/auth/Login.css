@@ -1,0 +1,231 @@
+.login-bg {
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.10);
+    padding: 40px 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.login-welcome {
+    color: #2563eb;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #233876;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.login-desc {
+    font-size: 0.98rem;
+    color: #888;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.login-social-btn {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e0e7ff;
+    border-radius: 6px;
+    padding: 10px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border 0.2s;
+}
+
+.login-social-btn.google:hover {
+    border-color: #2563eb;
+}
+
+.login-social-btn.github:hover {
+    border-color: #333;
+}
+
+.login-social-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.login-or {
+    width: 100%;
+    text-align: center;
+    color: #bbb;
+    font-size: 0.95rem;
+    margin: 8px 0 8px 0;
+    position: relative;
+}
+
+.login-or span {
+    background: #fff;
+    padding: 0 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.login-or:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: #e0e7ff;
+    z-index: 0;
+}
+
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.login-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.login-group label {
+    font-size: 0.98rem;
+    color: #233876;
+    font-weight: 500;
+}
+
+.login-group input {
+    padding: 10px 12px;
+    border: 1.5px solid #dbeafe;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    background: #f8fafc;
+    transition: border 0.2s;
+}
+
+.login-group input:focus {
+    border-color: #2563eb;
+}
+
+.login-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.login-remember {
+    font-size: 0.95rem;
+    color: #233876;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.login-forgot {
+    font-size: 0.95rem;
+    color: #888;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.login-forgot:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.login-btn {
+    width: 100%;
+    background: #233876;
+    color: #fff;
+    border: none;
+    padding: 13px 0;
+    border-radius: 6px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background: #2563eb;
+}
+
+.login-signup {
+    text-align: center;
+    font-size: 0.97rem;
+    color: #888;
+    margin-top: 10px;
+}
+
+.login-signup a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-signup a:hover {
+    text-decoration: underline;
+}
+
+.login-balloon {
+    position: absolute;
+    right: -120px;
+    top: 80px;
+    width: 120px;
+    opacity: 0.18;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.login-footer-bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 90px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.login-footer-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+}

@@ -1,0 +1,190 @@
+/* Modal root */
+.employer-modal-root {
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.employer-modal-title {
+  color: #2563eb;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.employer-modal-content {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.employer-modal-banner-wrap {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.employer-modal-banner {
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.employer-modal-avatar-wrap {
+  position: absolute;
+  left: 2.5rem;
+  bottom: -3rem;
+}
+
+/* .employer-modal-avatar {
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+} */
+
+.employer-modal-avatar {
+  width: 6rem; /* nhỏ hơn để gọn lại */
+  height: 6rem;
+  object-fit: contain; /* hiển thị toàn bộ logo */
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 0.5rem; /* tạo khoảng cách giữa logo và viền tròn */
+}
+
+.employer-modal-info {
+  margin-top: 4rem;
+  padding: 0 2.5rem 1.5rem 2.5rem;
+}
+
+.employer-modal-company-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 1rem;
+}
+
+.employer-modal-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.employer-modal-info-row {
+  display: flex;
+  align-items: center;
+}
+
+.employer-modal-icon {
+  margin-right: 0.5rem;
+  color: #2563eb;
+}
+
+.employer-modal-label {
+  font-weight: 600;
+}
+
+.employer-modal-value {
+  margin-left: 0.25rem;
+}
+
+.employer-modal-link {
+  margin-left: 0.25rem;
+  color: #2563eb;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.employer-modal-desc-wrap {
+  margin-top: 1rem;
+}
+
+.employer-modal-desc-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.employer-modal-desc {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: #374151;
+  text-align: justify;
+}
+
+.employer-modal-status-wrap {
+  margin-top: 1.25rem;
+}
+
+.employer-modal-status-label {
+  color: #2563eb;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.employer-modal-status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+}
+.employer-modal-status-approved {
+  background: #d1fae5;
+  color: #059669;
+}
+.employer-modal-status-pending {
+  background: #fef3c7;
+  color: #b45309;
+}
+.employer-modal-status-rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.employer-modal-btn-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.employer-modal-btn-reject {
+  font-weight: 600;
+}
+
+.employer-modal-btn-approve {
+  font-weight: 600;
+  background: #2563eb !important;
+  border: none;
+}
+
+.employer-modal-empty {
+  padding: 2.5rem 0;
+  text-align: center;
+  color: #6b7280;
+}
+
+@media (max-width: 600px) {
+  .employer-modal-info {
+    padding: 0 1rem 1rem 1rem;
+  }
+  .employer-modal-info-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .employer-modal-banner-wrap {
+    margin-bottom: 3.5rem;
+  }
+  .employer-modal-avatar-wrap {
+    left: 1rem;
+    bottom: -3rem;
+  }
+}
