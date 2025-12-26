@@ -69,32 +69,60 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatId, currentUserId, initialApplica
     if (initialApplicantName) setApplicantName(initialApplicantName);
   }, [initialApplicantName]);
 
+  // const sendMessage = async () => {
+  //   if (!input.trim()) return;
+  //   await addDoc(collection(db, "chats", chatId, "messages"), {
+  //     senderId: currentUserId,
+  //     text: input,
+  //     timestamp: serverTimestamp(),
+  //   });
+  //   // ensure the chat summary exists and is updated
+  //   // parse employerId/applicantId from chatId if chatId was generated as `${employer}_${applicant}`
+  //   const parts = chatId.split("_");
+  //   const maybeEmployerId = parts[0] ?? null;
+  //   const maybeApplicantId = parts[1] ?? null;
+  //   // Xác định phía nhận để set unread
+  //   // Nếu currentUserId là employer thì unread cho ứng viên, ngược lại cho employer
+  //   const unreadFor = currentUserId === maybeEmployerId ? 'applicant' : 'employer';
+  //   await setDoc(doc(db, "chats", chatId), {
+  //     employerId: maybeEmployerId ? String(maybeEmployerId) : "",
+  //     applicantId: maybeApplicantId ? String(maybeApplicantId) : "",
+  //     applicantName: applicantName || String(maybeApplicantId),
+  //     lastMessage: input,
+  //     lastTimestamp: serverTimestamp(),
+  //     unread: unreadFor === 'employer' ? true : true // luôn set true, Sidebar sẽ tự xử lý phía hiển thị
+  //   }, { merge: true });
+  //   setInput("");
+  // };
+  
   const sendMessage = async () => {
-    if (!input.trim()) return;
-    await addDoc(collection(db, "chats", chatId, "messages"), {
-      senderId: currentUserId,
-      text: input,
-      timestamp: serverTimestamp(),
-    });
-    // ensure the chat summary exists and is updated
-    // parse employerId/applicantId from chatId if chatId was generated as `${employer}_${applicant}`
-    const parts = chatId.split("_");
-    const maybeEmployerId = parts[0] ?? null;
-    const maybeApplicantId = parts[1] ?? null;
-    // Xác định phía nhận để set unread
-    // Nếu currentUserId là employer thì unread cho ứng viên, ngược lại cho employer
-    const unreadFor = currentUserId === maybeEmployerId ? 'applicant' : 'employer';
-    await setDoc(doc(db, "chats", chatId), {
-      employerId: maybeEmployerId ? String(maybeEmployerId) : "",
-      applicantId: maybeApplicantId ? String(maybeApplicantId) : "",
-      applicantName: applicantName || String(maybeApplicantId),
-      lastMessage: input,
-      lastTimestamp: serverTimestamp(),
-      unread: unreadFor === 'employer' ? true : true // luôn set true, Sidebar sẽ tự xử lý phía hiển thị
-    }, { merge: true });
-    setInput("");
-  };
-
+  if (!input.trim()) return;
+  await addDoc(collection(db, "chats", chatId, "messages"), {
+    senderId: currentUserId,
+    text: input,
+    timestamp: serverTimestamp(),
+  });
+  
+  const parts = chatId.split("_");
+  const maybeEmployerId = parts[0] ?? null;
+  const maybeApplicantId = parts[1] ?? null;
+  
+  // Xác định ai gửi
+  const isEmployerSending = currentUserId === maybeEmployerId;
+  
+  await setDoc(doc(db, "chats", chatId), {
+    employerId: maybeEmployerId ? String(maybeEmployerId) : "",
+    applicantId: maybeApplicantId ? String(maybeApplicantId) : "",
+    applicantName: applicantName || String(maybeApplicantId),
+    lastMessage: input,
+    lastTimestamp: serverTimestamp(),
+    // Nếu employer gửi → unread cho applicant, ngược lại unread cho employer
+    unreadForApplicant: isEmployerSending,
+    unreadForEmployer: !isEmployerSending
+  }, { merge: true });
+  
+  setInput("");
+};
   // Avatar cho 2 phía
   const avatar = (isUser: boolean) => (
     <div style={{

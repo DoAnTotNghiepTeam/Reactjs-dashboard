@@ -1,15 +1,16 @@
 import { initializeApp, getApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 // Firebase configuration for image upload (economic project)
 const firebaseConfig = {
-  apiKey: "AIzaSyB4lQsAr2_OxOse6R_ZfDAIAkCLNsb60rA",
-  authDomain: "economic-e3c75.firebaseapp.com",
-  projectId: "economic-e3c75",
-  storageBucket: "economic-e3c75.appspot.com",
-  messagingSenderId: "1097189893918",
-  appId: "1:1097189893918:web:8459347d9cf74609030b0f",
-  measurementId: "G-4D6DZV8ZWW",
+  apiKey: "AIzaSyA8CKFfVxJyto2PDzibbSnXgDCCxRMXVeA",
+  authDomain: "cenima-2300.firebaseapp.com",
+  projectId: "cenima-2300",
+  storageBucket: "cenima-2300.appspot.com",
+  messagingSenderId: "804992089940",
+  appId: "1:804992089940:web:bf76dcc2bf5b72831c92c1",
+  measurementId: "G-G9QXD9H6ZF"
 };
 
 // Create a separate Firebase app instance for image uploads
@@ -30,5 +31,8 @@ const imageUploadApp = getImageUploadApp();
 
 // Initialize Firebase Storage for image uploads
 export const storage = getStorage(imageUploadApp);
+
+// Initialize Firestore
+export const db = getFirestore(imageUploadApp);
 
 export default imageUploadApp;
