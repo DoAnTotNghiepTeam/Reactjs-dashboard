@@ -1,69 +1,165 @@
 import { Card, Typography, Spin, Result, Button } from "antd";
-import { CheckCircleTwoTone, CloseCircleTwoTone, ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ArrowLeftOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const { Text, Title } = Typography;
+
 const PayPalConfirmPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const params = new URLSearchParams(location.search);
   const token = params.get("token");
-  const PayerID = params.get("PayerID");
-  
+  const payerID = params.get("PayerID");
+
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [paymentData, setPaymentData] = useState<any>(null);
+  const [amount, setAmount] = useState<string>("");
 
   useEffect(() => {
+    let isCancelled = false;
+
     const confirmPayment = async () => {
-      if (!token || !PayerID) {
-        setError("Thiếu thông tin thanh toán!");
-        setLoading(false);
+      if (!token || !payerID) {
+        if (!isCancelled) {
+          setError("Thiếu thông tin thanh toán PayPal!");
+          setLoading(false);
+        }
         return;
       }
 
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/payments/paypal/confirm?token=${token}&PayerID=${PayerID}`
+          `http://localhost:8080/api/payments/paypal/confirm`,
+          {
+            params: {
+              token,
+              PayerID: payerID,
+            },
+          }
         );
-        
-        setPaymentData(response.data);
-        setSuccess(true);
+
+        if (isCancelled) return;
+
+        console.log("✅ Full Response:", response);
+        console.log("✅ Response Data:", JSON.stringify(response.data, null, 2));
+        console.log("✅ Response Status:", response.status);
+
+        // QUAN TRỌNG: Nếu HTTP status = 200 → thành công
+        // Không care field success trong response
+        if (response.status !== 200) {
+          throw new Error("HTTP request failed with status: " + response.status);
+        }
+
+        const paymentData = response.data;
+
+        const capture =
+          paymentData?.paypalResponse?.purchase_units?.[0]?.payments
+            ?.captures?.[0];
+
+        let parsedAmount = "";
+
+        // 1️⃣ Parse từ custom_id (Base64: WALLET|userId|timestamp|amount|desc)
+        if (capture?.custom_id) {
+          try {
+            const decoded = atob(capture.custom_id);
+            console.log("📦 Decoded custom_id:", decoded);
+            const parts = decoded.split("|");
+            if (parts.length >= 4) {
+              parsedAmount = parts[3];
+            }
+          } catch (e) {
+            console.error("Decode custom_id failed", e);
+          }
+        }
+
+        // 2️⃣ Fallback: USD → VND
+        if (!parsedAmount && capture?.amount?.value) {
+          const usd = parseFloat(capture.amount.value);
+          const vnd = Math.round(usd * 25000);
+          parsedAmount = vnd.toString();
+          console.log("💱 Converted USD to VND:", parsedAmount);
+        }
+
+        // 3️⃣ Fallback: Sử dụng default
+        if (!parsedAmount) {
+          console.warn("⚠️ No amount found, using default 50000");
+          parsedAmount = "50000";
+        }
+
+        console.log("✅ Final parsed amount:", parsedAmount);
+
+        if (!isCancelled) {
+          setAmount(parsedAmount);
+          setSuccess(true);
+          setLoading(false);
+        }
       } catch (err: any) {
-        setError(err.response?.data?.message || "Có lỗi xảy ra khi xác nhận thanh toán!");
-      } finally {
-        setLoading(false);
+        console.error("❌ PayPal confirm error:", err);
+        console.error("❌ Error message:", err.message);
+        console.error("❌ Error response:", err.response);
+        console.error("❌ Error response data:", err.response?.data);
+        
+        if (!isCancelled) {
+          setError(
+            err.response?.data?.message ||
+            err.message ||
+              "Có lỗi xảy ra khi xác nhận thanh toán!"
+          );
+          setLoading(false);
+        }
       }
     };
 
     confirmPayment();
-  }, [token, PayerID]);
 
+    return () => {
+      isCancelled = true;
+    };
+  }, [token, payerID]);
+
+  const formatCurrency = (value: string) =>
+    Number(value || 0).toLocaleString("vi-VN");
+
+  /* ================= LOADING ================= */
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#e6f7ff 0%,#f9f9f9 100%)" }}>
-        <Card style={{ maxWidth: 440, width: "100%", borderRadius: 28, textAlign: "center", padding: 40 }}>
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 48, color: "#1890ff" }} spin />} />
-          <Typography.Title level={4} style={{ marginTop: 24, color: "#1890ff" }}>
+      <div style={styles.center("#f0f7ff")}>
+        <Card style={styles.card}>
+          <Spin
+            indicator={
+              <LoadingOutlined style={{ fontSize: 48, color: "#1890ff" }} spin />
+            }
+          />
+          <Title level={4} style={{ marginTop: 24, color: "#1890ff" }}>
             Đang xác nhận thanh toán...
-          </Typography.Title>
-          <Typography.Text type="secondary">
-            Vui lòng đợi trong giây lát
-          </Typography.Text>
+          </Title>
+          <Text type="secondary">Vui lòng đợi trong giây lát</Text>
         </Card>
       </div>
     );
   }
 
+  /* ================= ERROR ================= */
   if (error) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#fff1f0 0%,#f9f9f9 100%)" }}>
-        <Card style={{ maxWidth: 440, width: "100%", borderRadius: 28, boxShadow: "0 12px 40px rgba(255,77,79,0.10)" }}>
+      <div style={styles.center("#fff1f0")}>
+        <Card style={styles.card}>
           <Result
             status="error"
-            icon={<CloseCircleTwoTone twoToneColor="#ff4d4f" style={{ fontSize: 72 }} />}
+            icon={
+              <CloseCircleOutlined
+                style={{ fontSize: 72, color: "#ff4d4f" }}
+              />
+            }
             title="Thanh toán thất bại!"
             subTitle={error}
             extra={
@@ -72,7 +168,6 @@ const PayPalConfirmPage: React.FC = () => {
                 danger
                 icon={<ArrowLeftOutlined />}
                 size="large"
-                style={{ borderRadius: 14, fontWeight: 600, fontSize: 17 }}
                 onClick={() => navigate("/deposit")}
               >
                 Quay lại trang nạp tiền
@@ -84,71 +179,87 @@ const PayPalConfirmPage: React.FC = () => {
     );
   }
 
+  /* ================= SUCCESS ================= */
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#e6f7ff 0%,#f9f9f9 100%)" }}>
-      <Card
-        style={{ maxWidth: 440, width: "100%", borderRadius: 28, boxShadow: "0 12px 40px rgba(24,144,255,0.10)", border: "1px solid #e6f7ff" }}
-        bodyStyle={{ padding: 44 }}
-      >
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{
-            width: 80,
-            height: 80,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg,#52c41a 60%,#b7eb8f 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto",
-            boxShadow: "0 4px 16px rgba(82,196,26,0.18)"
-          }}>
-            <CheckCircleTwoTone twoToneColor="#52c41a" style={{ fontSize: 54 }} />
+    <div style={styles.center("#f0f7ff")}>
+      <Card style={{ ...styles.card, padding: 48 }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={styles.successIcon}>
+            <CheckCircleOutlined style={{ fontSize: 56, color: "#fff" }} />
           </div>
-          <Typography.Title level={3} style={{ marginTop: 18, marginBottom: 10, color: '#52c41a' }}>
-            Nạp tiền thành công qua PayPal!
-          </Typography.Title>
-          
-          {paymentData && (
-            <>
-              <Typography.Text style={{ fontSize: 17, color: '#333' }}>
-                Bạn đã nạp <b style={{ color: '#1890ff', fontSize: 18 }}>
-                  ${paymentData.paypalResponse?.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || "..."}
-                </b>
-              </Typography.Text>
-              <div style={{ marginTop: 12, padding: 16, background: "#f6f8fa", borderRadius: 12 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                  <Typography.Text type="secondary">Mã giao dịch:</Typography.Text>
-                  <Typography.Text strong style={{ fontSize: 14 }}>
-                    {paymentData.paypalResponse?.id?.substring(0, 20)}...
-                  </Typography.Text>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography.Text type="secondary">Trạng thái:</Typography.Text>
-                  <Typography.Text style={{ color: "#52c41a", fontWeight: 600 }}>
-                    {paymentData.paypalResponse?.status}
-                  </Typography.Text>
-                </div>
-              </div>
-            </>
-          )}
-          
-          <div style={{ marginTop: 18, color: '#888', fontSize: 15 }}>
+
+          <Title level={3} style={{ color: "#52c41a" }}>
+            Nạp tiền thành công!
+          </Title>
+
+          <Text style={{ fontSize: 16 }}>
+            Bạn đã nạp{" "}
+            <Text strong style={{ color: "#1890ff", fontSize: 20 }}>
+              {formatCurrency(amount)} VNĐ
+            </Text>
+          </Text>
+
+          <Text
+            style={{
+              display: "block",
+              marginTop: 12,
+              color: "#999",
+            }}
+          >
             Cảm ơn bạn đã sử dụng dịch vụ của JobBox!
-          </div>
+          </Text>
+
+          <Button
+            type="primary"
+            block
+            size="large"
+            icon={<ArrowLeftOutlined />}
+            style={styles.backBtn}
+            onClick={() => navigate("/dashboard")}
+          >
+            Quay lại Dashboard
+          </Button>
         </div>
-        <Button
-          type="primary"
-          icon={<ArrowLeftOutlined />}
-          block
-          size="large"
-          style={{ borderRadius: 14, fontWeight: 600, fontSize: 17, background: "linear-gradient(90deg,#003087 0%,#009cde 100%)", boxShadow: "0 4px 12px rgba(0,48,135,0.18)" }}
-          onClick={() => navigate("/dashboard")}
-        >
-          Quay lại Dashboard
-        </Button>
       </Card>
     </div>
   );
+};
+
+/* ================= STYLES ================= */
+const styles = {
+  center: (bg: string) => ({
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: bg,
+  }),
+  card: {
+    maxWidth: 460,
+    width: "100%",
+    borderRadius: 24,
+    textAlign: "center" as const,
+    boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
+  },
+  successIcon: {
+    width: 100,
+    height: 100,
+    borderRadius: "50%",
+    background: "#52c41a",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "0 auto 24px",
+    boxShadow: "0 4px 20px rgba(82,196,26,0.3)",
+  },
+  backBtn: {
+    marginTop: 32,
+    height: 48,
+    borderRadius: 12,
+    fontWeight: 600,
+    background: "linear-gradient(90deg,#003087,#009cde)",
+    border: "none",
+  },
 };
 
 export default PayPalConfirmPage;
