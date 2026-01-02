@@ -11,7 +11,7 @@ export interface BannerEmployer {
 	endDate: string;
 	amount?: number;
 	price?: number;
-	status: "ACTIVE" | "PENDING" | "REJECTED";
+	status: "ACTIVE" | "PENDING" | "REJECTED" | "EXPIRED" | "APPROVED";
 	description?: string;
 	userId: number;
 	// userName?: string;

@@ -10,8 +10,8 @@ import {
   Modal,
 } from "antd";
 import AddBanner from "./components/AddBanner";
-import EditBanner from "./components/EditBanner";
-import { getBannersByUser, renewBanner } from "./banneremployer.service";
+import EditBanner from "./components/UpdateBanner";
+import { getBannersByUser } from "./banneremployer.service";
 import { useAuthStore } from "../../stores/useAuthorStore";
 import type { BannerEmployer } from "./banneremployer.type";
 import dayjs from "dayjs";
@@ -36,59 +36,70 @@ const BannerEmployerPage = () => {
     setLoading(true);
     try {
       const data = await getBannersByUser(userId);
+      console.log("📊 Banner data from API:", data); // Debug: xem dữ liệu từ API
       setBanners(data);
-    } catch {
+    } catch (error) {
+      console.error("❌ Error fetching banners:", error); // Debug: xem lỗi nếu có
       message.error("Không lấy được danh sách banner!");
     }
     setLoading(false);
   };
 
-  const handleRenew = (banner: BannerEmployer) => {
-    Modal.confirm({
-      title: "Gia hạn banner",
-      content: "Bạn muốn gửi yêu cầu gia hạn banner này?",
-      onOk: async () => {
-        try {
-          await renewBanner({
-            ...banner,
-            startDate: dayjs(banner.endDate)
-              .add(1, "day")
-              .format("YYYY-MM-DDTHH:mm:ss"),
-            endDate: dayjs(banner.endDate)
-              .add(8, "day")
-              .format("YYYY-MM-DDTHH:mm:ss"),
-            status: "PENDING",
-            id: undefined, // Tạo mới
-          });
-          message.success("Đã gửi yêu cầu gia hạn!");
-          fetchBanners();
-        } catch {
-          message.error("Gửi yêu cầu gia hạn thất bại!");
-        }
-      },
-    });
-  };
 
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id" },
+    { title: "ID", dataIndex: "id", key: "id", width: 60 },
     { title: "Company", dataIndex: "companyName", key: "companyName" },
-    { title: "Banner Type", dataIndex: "bannerType", key: "bannerType" },
-    { title: "Start Date", dataIndex: "startDate", key: "startDate" },
-    { title: "End Date", dataIndex: "endDate", key: "endDate" },
+    { title: "Email", dataIndex: "companyEmail", key: "companyEmail", width: 200 },
+    { 
+      title: "Banner Type", 
+      dataIndex: "bannerType", 
+      key: "bannerType", 
+      width: 120,
+      render: (type: string) => {
+        if (type === "Vip") return <Tag color="red">VIP</Tag>;
+        if (type === "Featured") return <Tag color="green">FEATURED</Tag>;
+        if (type === "Standard") return <Tag color="blue">STANDARD</Tag>;
+        return <Tag>{type}</Tag>;
+      }
+    },
+    { 
+      title: "Start Date", 
+      dataIndex: "startDate", 
+      key: "startDate",
+      width: 180,
+      render: (date: string) => date ? dayjs(date).format("YYYY-MM-DD HH:mm:ss") : "-"
+    },
+    { 
+      title: "End Date", 
+      dataIndex: "endDate", 
+      key: "endDate",
+      width: 180,
+      render: (date: string) => date ? dayjs(date).format("YYYY-MM-DD HH:mm:ss") : "-"
+    },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: 120,
       render: (status: BannerEmployer["status"]) => {
+        // PENDING - Chờ admin duyệt
+        if (status === "PENDING") return <Tag color="orange">PENDING</Tag>;
+        // ACTIVE - Đang hiển thị (đã duyệt và đến ngày)
         if (status === "ACTIVE") return <Tag color="green">ACTIVE</Tag>;
+        // APPROVED - Admin đã duyệt nhưng chưa đến ngày
+        if (status === "APPROVED") return <Tag color="blue">APPROVED</Tag>;
+        // REJECTED - Admin từ chối
         if (status === "REJECTED") return <Tag color="red">REJECTED</Tag>;
-        return <Tag color="orange">PENDING</Tag>;
+        // EXPIRED - Đã hết hạn
+        if (status === "EXPIRED") return <Tag color="default">EXPIRED</Tag>;
+        return <Tag color="gray">{status}</Tag>; // Fallback
       },
     },
     {
       title: "Image",
       dataIndex: "bannerImage",
       key: "bannerImage",
+      width: 100,
       render: (url: string) =>
         url ? (
           <img
@@ -110,7 +121,46 @@ const BannerEmployerPage = () => {
           />
         ) : null,
     },
-    // action 
+    {
+      title: "Action",
+      key: "action",
+      width: 150,
+      render: (_: any, record: BannerEmployer) => {
+        // Nếu status là PENDING hoặc APPROVED → hiển thị nút Update
+        if (record.status === "PENDING" || record.status === "APPROVED") {
+          return (
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => {
+                setEditBanner(record);
+                setEditVisible(true);
+              }}
+            >
+              Update
+            </Button>
+          );
+        }
+        
+        // Nếu status là ACTIVE → hiển thị link xem banner
+        if (record.status === "ACTIVE") {
+          return (
+            <Button
+              type="link"
+              size="small"
+              href="http://localhost:3000"
+              target="_blank"
+            >
+              Xem banner
+            </Button>
+          );
+        }
+        
+        
+        // Status REJECTED không hiển thị button
+        return null;
+      },
+    }, 
     // {
     //   title: "Action",
     //   key: "action",
@@ -165,6 +215,7 @@ const BannerEmployerPage = () => {
         rowKey="id"
         loading={loading}
         pagination={{ pageSize: 10 }}
+        scroll={{ x: 1200 }}
       />
 
       {/* Modal tạo mới */}

@@ -16,17 +16,17 @@ export interface LoggedInUser {
 export interface AuthState {
   access_token?: string;
   refresh_token?: string;
-  loggedInUser?: LoggedInUser;  
+  loggedInUser?: LoggedInUser;     // Thông tin user đã đăng nhập 
   loading: boolean;
   error: any;
   login: ({ username, password, navigate }: { username: string; password: string; navigate: NavigateFunction }) => Promise<void>;
   logOut: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<AuthState>()(    // ta sử dụng useAuthStore ( của zustand store) để lấy thông tin user đã đăng nhập ( lấy cái ttin từ loggedInUser : id , email, fullName, username, roles... ) 
   devtools(
     persist(
-      (set) => ({
+      (set) => ({ 
         access_token: undefined,
         refresh_token: undefined,
         loggedInUser: undefined,
