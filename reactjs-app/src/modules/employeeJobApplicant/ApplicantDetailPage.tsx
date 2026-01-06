@@ -10,9 +10,8 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export const ApplicationStatus = {
   PENDING: "PENDING",
-  CV_REVIEW: "CV_REVIEW",
+  CV_PASSED: "CV_PASSED",
   INTERVIEW: "INTERVIEW",
-  OFFER: "OFFER",
   HIRED: "HIRED",
   REJECTED: "REJECTED",
 } as const;

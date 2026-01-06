@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Menu } from "@headlessui/react";
 import { useAuthStore } from "../stores/useAuthorStore";
-import { Bell } from "lucide-react";
+import NotificationDropdown from "../modules/notification/NotificationDropdown";
 import "./style.css";
 
 export default function CustomHeader() {
@@ -26,14 +26,10 @@ export default function CustomHeader() {
             </div>
 
             <div className="header-right">
-                {/* 🔔 Icon chuông */}
-                <button className="relative " style={{ marginRight: 16 }}>
-                    <Bell className="w-6 h-6 text-gray-600 hover:text-gray-800 transition" />
-                    {/* Badge số thông báo */}
-                    {/* <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                        300
-                    </span> */}
-                </button>
+                {/* 🔔 Notification Dropdown */}
+                <div style={{ marginRight: 16 }}>
+                    <NotificationDropdown />
+                </div>
                 <div className="user-profile">
                     <Menu as="div" className="relative">
                         <Menu.Button className="flex items-center gap-2 cursor-pointer">
