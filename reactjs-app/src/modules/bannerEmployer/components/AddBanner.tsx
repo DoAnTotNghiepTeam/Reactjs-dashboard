@@ -232,6 +232,10 @@ export default function AddBanner({ visible, onClose }: AddBannerProps) {
               setBannerType(v);
               setSizeHint(getSizeHint(v));
               form.setFieldsValue({ bannerType: v });
+              // Reset ảnh khi đổi loại banner
+              setFile(null);
+              setImageUrl("");
+              setImageSize(null);
             }}
           >
             <Select.Option value="Vip">

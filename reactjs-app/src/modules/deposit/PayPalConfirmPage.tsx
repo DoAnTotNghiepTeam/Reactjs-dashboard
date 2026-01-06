@@ -67,8 +67,16 @@ const PayPalConfirmPage: React.FC = () => {
 
         let parsedAmount = "";
 
-        // 1️⃣ Parse từ custom_id (Base64: WALLET|userId|timestamp|amount|desc)
-        if (capture?.custom_id) {
+        // 1️⃣ Lấy từ localStorage (ưu tiên cao nhất)
+        const storedAmount = localStorage.getItem("pendingDepositAmount");
+        if (storedAmount) {
+          parsedAmount = storedAmount;
+          localStorage.removeItem("pendingDepositAmount"); // Xóa sau khi dùng
+          console.log("✅ Amount from localStorage:", parsedAmount);
+        }
+
+        // 2️⃣ Parse từ custom_id (Base64: WALLET|userId|timestamp|amount|desc)
+        if (!parsedAmount && capture?.custom_id) {
           try {
             const decoded = atob(capture.custom_id);
             console.log("📦 Decoded custom_id:", decoded);
@@ -81,7 +89,7 @@ const PayPalConfirmPage: React.FC = () => {
           }
         }
 
-        // 2️⃣ Fallback: USD → VND
+        // 3️⃣ Fallback: USD → VND
         if (!parsedAmount && capture?.amount?.value) {
           const usd = parseFloat(capture.amount.value);
           const vnd = Math.round(usd * 25000);
@@ -89,7 +97,7 @@ const PayPalConfirmPage: React.FC = () => {
           console.log("💱 Converted USD to VND:", parsedAmount);
         }
 
-        // 3️⃣ Fallback: Sử dụng default
+        // 4️⃣ Fallback: Sử dụng default (không nên xảy ra)
         if (!parsedAmount) {
           console.warn("⚠️ No amount found, using default 50000");
           parsedAmount = "50000";

@@ -20,7 +20,8 @@ export const notificationService = {
       NOTIFICATION_BASE_URL,
       { params }
     );
-    return response.data;
+    // apiClient đã return response.data rồi, không cần .data nữa
+    return response as any as NotificationPaginatedResponse;
   },
 
   /**
@@ -32,7 +33,7 @@ export const notificationService = {
       `${NOTIFICATION_BASE_URL}/unread`,
       { params }
     );
-    return response.data;
+    return response as any as UnreadNotificationsResponse;
   },
 
   /**
@@ -43,7 +44,7 @@ export const notificationService = {
     const response = await apiClient.get<UnreadCountResponse>(
       `${NOTIFICATION_BASE_URL}/unread-count`
     );
-    return response.data;
+    return response as any as UnreadCountResponse;
   },
 
   /**
@@ -54,7 +55,7 @@ export const notificationService = {
     const response = await apiClient.put<MarkAsReadResponse>(
       `${NOTIFICATION_BASE_URL}/${notificationId}/read`
     );
-    return response.data;
+    return response as any as MarkAsReadResponse;
   },
 
   /**
@@ -65,7 +66,7 @@ export const notificationService = {
     const response = await apiClient.put<MarkAsReadResponse>(
       `${NOTIFICATION_BASE_URL}/mark-all-read`
     );
-    return response.data;
+    return response as any as MarkAsReadResponse;
   },
 
   /**
@@ -76,6 +77,6 @@ export const notificationService = {
     const response = await apiClient.delete<MarkAsReadResponse>(
       `${NOTIFICATION_BASE_URL}/${notificationId}`
     );
-    return response.data;
+    return response as any as MarkAsReadResponse;
   },
 };

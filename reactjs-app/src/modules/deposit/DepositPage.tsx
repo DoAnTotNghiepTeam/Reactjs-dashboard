@@ -3,13 +3,15 @@ import { Button, Form, InputNumber, message, Card, Typography, Radio } from "ant
 import { depositToUserVNPay, depositToUserPayPal } from "./deposit.service";
 import { useAuthStore } from "../../stores/useAuthorStore";
 import { DollarCircleOutlined, ReloadOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
-const { Title, Text, Link } = Typography;
+const { Title, Text } = Typography;
 
 const DepositPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"vnpay" | "paypal">("paypal");
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const userId = useAuthStore((state) => state.loggedInUser?.id);
   const userName = useAuthStore((state) => state.loggedInUser?.username);
   const [amount, setAmount] = useState<number>(50000);
@@ -40,6 +42,9 @@ const DepositPage: React.FC = () => {
         setLoading(false);
         return;
       }
+      
+      // Lưu amount vào localStorage trước khi redirect
+      localStorage.setItem("pendingDepositAmount", values.amount.toString());
       
       // Chuyển hướng trình duyệt đến trang thanh toán
       window.location.href = paymentUrl;
@@ -89,13 +94,16 @@ const DepositPage: React.FC = () => {
               <DollarCircleOutlined style={{ fontSize: 38, color: "#fff" }} />
             </div>
             <div style={{ flex: 1, textAlign: "right" }}>
-              <Link 
-                href="#" 
+              <Button
+                type="default"
+                icon={<ReloadOutlined />}
+                onClick={() => navigate("/deposit/history")}
                 style={{ 
                   display: "inline-flex", 
                   alignItems: "center", 
                   gap: 6,
                   padding: "6px 14px",
+                  height: "auto",
                   fontSize: 14,
                   fontWeight: 500,
                   background: "#fff",
@@ -116,9 +124,8 @@ const DepositPage: React.FC = () => {
                   e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                <ReloadOutlined style={{ fontSize: 14 }} /> 
-                <span>View History</span>
-              </Link>
+                View History
+              </Button>
             </div>
           </div>
           <Title level={3} style={{ marginTop: 0, marginBottom: 8 }}>

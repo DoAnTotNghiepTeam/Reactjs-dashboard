@@ -1,8 +1,9 @@
-import { MoneyCollectOutlined } from "@ant-design/icons";
+import { MoneyCollectOutlined, HistoryOutlined } from "@ant-design/icons";
 import type { RouteItem } from "../../routes";
 import DepositPage from "./DepositPage";
 import SuccessDepositPage from "./SuccessDepositPage";
 import PayPalConfirmPage from "./PayPalConfirmPage";
+import DepositHistoryPage from "./DepositHistoryPage";
 
 export const routesDeposit: RouteItem[] = [
   {
@@ -11,6 +12,16 @@ export const routesDeposit: RouteItem[] = [
     key: "deposit",
     icon: <MoneyCollectOutlined style={{ fontSize: 22, color: "#66789c" }} />,
     element: <DepositPage />,
+    isShowMenu: true,
+    isPrivate: true,
+    roles: ["Employers"],
+  },
+  {
+    path: "/deposit/history",
+    label: <span style={{ fontSize: 18, fontWeight: "bold" }}>deposit history</span>,
+    key: "deposit-history",
+    icon: <HistoryOutlined style={{ fontSize: 22, color: "#66789c" }} />,
+    element: <DepositHistoryPage />,
     isShowMenu: true,
     isPrivate: true,
     roles: ["Employers"],
