@@ -30,6 +30,9 @@ import { routesCategory } from "../modules/category/category.route";
 import { routesOurTeam } from "../modules/ourTeam/ourTeam.router";
 import { aboutUsRoute } from "../modules/aboutUs/aboutUs.route";
 
+// Notification
+import { notificationRoutes } from "../modules/notification/notification.route";
+
 export type RouteItem = {
   path?: string;
   label: React.ReactNode;
@@ -66,4 +69,7 @@ export const routes: RouteItem[] = [
   ...routesCategory,
   ...routesOurTeam,
   ...aboutUsRoute,
+  
+  // Notification
+  ...notificationRoutes,
 ];

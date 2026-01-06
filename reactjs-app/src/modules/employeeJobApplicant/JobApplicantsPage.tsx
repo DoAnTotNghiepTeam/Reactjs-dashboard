@@ -8,10 +8,9 @@ import { ArrowLeftIcon } from "lucide-react";
 import { ApplicationStatus } from "./ApplicantDetailPage";
 
 const statusFlow: Record<ApplicationStatus, ApplicationStatus[]> = {
-  PENDING: ["CV_REVIEW"],
-  CV_REVIEW: ["INTERVIEW", "REJECTED"],
-  INTERVIEW: ["OFFER", "REJECTED"],
-  OFFER: ["HIRED", "REJECTED"],
+  PENDING: ["CV_PASSED"],
+  CV_PASSED: ["INTERVIEW", "REJECTED"],
+  INTERVIEW: ["HIRED", "REJECTED"],
   HIRED: [],
   REJECTED: [],
 };
@@ -151,9 +150,8 @@ export default function JobApplicantsPage() {
         {/* <div className={styles.statsBar}>
           {[
             ApplicationStatus.PENDING,
-            ApplicationStatus.CV_REVIEW,
+            ApplicationStatus.CV_PASSED,
             ApplicationStatus.INTERVIEW,
-            ApplicationStatus.OFFER,
             ApplicationStatus.HIRED,
             ApplicationStatus.REJECTED,
           ].map((status) => (
@@ -174,9 +172,8 @@ export default function JobApplicantsPage() {
             <option value="">ALL</option>
             {[
               ApplicationStatus.PENDING,
-              ApplicationStatus.CV_REVIEW,
+              ApplicationStatus.CV_PASSED,
               ApplicationStatus.INTERVIEW,
-              ApplicationStatus.OFFER,
               ApplicationStatus.HIRED,
               ApplicationStatus.REJECTED,
             ].map((s) => (

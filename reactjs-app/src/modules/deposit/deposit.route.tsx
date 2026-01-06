@@ -2,6 +2,7 @@ import { MoneyCollectOutlined } from "@ant-design/icons";
 import type { RouteItem } from "../../routes";
 import DepositPage from "./DepositPage";
 import SuccessDepositPage from "./SuccessDepositPage";
+import PayPalConfirmPage from "./PayPalConfirmPage";
 
 export const routesDeposit: RouteItem[] = [
   {
@@ -19,6 +20,15 @@ export const routesDeposit: RouteItem[] = [
     key: "deposit-success",
     label: "",
     element: <SuccessDepositPage />,
+    isShowMenu: false,
+    isPrivate: true,
+    roles: ["Employers"],
+  },
+  {
+    path: "/deposit/paypal/confirm",
+    key: "deposit-paypal-confirm",
+    label: "",
+    element: <PayPalConfirmPage />,
     isShowMenu: false,
     isPrivate: true,
     roles: ["Employers"],

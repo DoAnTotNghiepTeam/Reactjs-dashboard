@@ -213,7 +213,7 @@
 }
 
 /* Status colors */
-.statusCV_REVIEW { background: #fef9c3; border-color: #facc15; color: #854d0e; }
+.statusCV_PASSED { background: #fef9c3; border-color: #facc15; color: #854d0e; }
 .statusINTERVIEW { background: #dbeafe; border-color: #3b82f6; color: #1e40af; }
 .statusOFFER { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
 .statusHIRED { background: #dcfce7; border-color: #16a34a; color: #166534; }

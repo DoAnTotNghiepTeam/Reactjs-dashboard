@@ -24,7 +24,7 @@ export const getBannersByUser = async (userId: number): Promise<BannerEmployer[]
   return Array.isArray(res.data) ? res.data : res.data.data;
 };
 
-// Tạo banner mới
+// Tạo banner mới = gia hạn banner
 export const createBanner = async (
   formData: FormData,
   access_token: string
@@ -42,14 +42,15 @@ export const createBanner = async (
 // Cập nhật banner
 export const updateBanner = async (
   id: number,
-  data: Partial<BannerEmployer>
+  formData: FormData,
+  access_token: string
 ): Promise<any> => {
-  const res = await axios.patch(`http://localhost:8080/api/banners/${id}`, data);
-  return res.data;
-};
-
-// Gia hạn banner
-export const renewBanner = async (data: Partial<BannerEmployer>): Promise<any> => {
-  const res = await axios.post("http://localhost:8080/api/banners", data);
+  console.log("📝 Update banner - ID:", id); // Debug
+  const res = await axios.patch(`http://localhost:8080/api/banners/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
   return res.data;
 };

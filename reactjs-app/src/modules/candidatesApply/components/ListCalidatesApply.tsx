@@ -99,9 +99,9 @@ const ListCalidatesApply: React.FC = () => {
 								<Select value={status} onChange={v => { setStatus(v); setPage(1); }} style={{ width: 140 }}>
 									<Select.Option value="ALL">Tất cả trạng thái</Select.Option>
 									<Select.Option value="PENDING">PENDING</Select.Option>
-									<Select.Option value="CV_REVIEW">CV_REVIEW</Select.Option>
+							<Select.Option value="CV_PASSED">CV_PASSED</Select.Option>
 									<Select.Option value="INTERVIEW">INTERVIEW</Select.Option>
-									<Select.Option value="OFFER">OFFER</Select.Option>
+
 									<Select.Option value="HIRED">HIRED</Select.Option>
 									<Select.Option value="REJECTED">REJECTED</Select.Option>
 								</Select>

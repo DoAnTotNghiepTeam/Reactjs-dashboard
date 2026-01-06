@@ -1,10 +1,11 @@
 import { Modal, Form, Input, Button, DatePicker, Select, Upload, message } from "antd";
 import toast from "react-hot-toast";
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import type { UploadRequestOption } from "rc-upload/lib/interface";
 import { createBanner } from "../banneremployer.service";
 import { useAuthStore } from "../../../stores/useAuthorStore";
+import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 
@@ -23,6 +24,9 @@ export default function AddBanner({ visible, onClose }: AddBannerProps) {
   const [sizeHint, setSizeHint] = useState<string>(
     "Ảnh Vip: chiều ngang ≤ 600px, chiều dọc ≤ 380px"
   );
+  
+  // Lấy email từ user đang đăng nhập
+  const loggedInUser = useAuthStore((state) => state.loggedInUser);
   const bannerPrices: Record<string, number> = {
     Vip: 3,
     Featured: 2,
@@ -37,6 +41,40 @@ export default function AddBanner({ visible, onClose }: AddBannerProps) {
     duration: 3,
     maxCount: 2,
   });
+
+  //  hiển thị thông tin của user đang đăng nhập
+  // console.log( "Logged in user in AddBanner:", loggedInUser);
+  
+  /**
+   * Tự động điền email và start date khi modal mở
+   * - useEffect chạy khi: visible, loggedInUser, hoặc form thay đổi
+   * - Điền email từ thông tin user đang đăng nhập (lấy từ useAuthStore)
+   * - Set start date = ngày mai lúc 00:00:00 (ví dụ: hôm nay 2/1 → start date = 3/1 00:00:00)
+   * - End date để trống để người dùng tự chọn
+   */
+  useEffect(() => {
+    if (visible) {
+      // Điền email từ user đang đăng nhập (tự động có sẵn)
+      if (loggedInUser?.email) {
+        form.setFieldsValue({
+          companyEmail: loggedInUser.email
+        });
+      }
+      
+      // Tính ngày mai lúc 00:00:00
+      // dayjs().add(1, 'day') → cộng thêm 1 ngày
+      // .startOf('day') → đặt về 00:00:00
+      const tomorrow = dayjs().add(1, 'day').startOf('day');
+      
+      // Set vào form: [start date, end date]
+      // Start date = ngày mai 00:00:00
+      // End date = null (để trống cho user tự chọn)
+      form.setFieldsValue({
+        dateRange: [tomorrow, null]
+      });
+      setDateRange([tomorrow, null]);
+    }
+  }, [visible, loggedInUser, form]); // Dependencies: chạy lại khi 3 biến này thay đổi
 
   // Thông báo kích thước động
   const getSizeHint = (type: string) => {
@@ -142,13 +180,17 @@ export default function AddBanner({ visible, onClose }: AddBannerProps) {
       const { access_token } = useAuthStore.getState();
   await createBanner(formData, access_token ?? "");
   toast.success("Tạo banner thành công!");
-  onClose();
   form.resetFields();
+  // Giữ lại email sau khi reset
+  if (loggedInUser?.email) {
+    form.setFieldsValue({ companyEmail: loggedInUser.email });
+  }
   setImageUrl("");
   setFile(null);
   setImageSize(null);
   setBannerType("Vip");
   setSizeHint(getSizeHint("Vip"));
+  onClose();
     } catch (err: any) {
       let errorMsg = "Tạo banner thất bại!";
       if (err?.response?.data?.message) {
@@ -228,6 +270,9 @@ export default function AddBanner({ visible, onClose }: AddBannerProps) {
               form.setFieldsValue({ dateRange: dates });
             }}
           />
+          <div style={{ color: "#1890ff", marginTop: 4, fontSize: "13px" }}>
+            📅 Your banner will be displayed at 00:00 on the selected start date after admin approval
+          </div>
         </Form.Item>
 
         <Form.Item label="Ảnh banner/logo" required>
