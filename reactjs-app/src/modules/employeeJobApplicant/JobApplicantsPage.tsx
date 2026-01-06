@@ -122,6 +122,10 @@ export default function JobApplicantsPage() {
         interviewer || undefined
       );
       await fetchApplicants();
+      
+      // Trigger refresh notifications sau khi update status
+      window.dispatchEvent(new Event('refreshNotifications'));
+      
       toast.success("✅ Update success");
       setOpenModal(false);
     } catch (err) {

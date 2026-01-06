@@ -34,6 +34,7 @@ export interface NotificationResponseDto {
   isRead: boolean;
   createdAt: string; // ISO datetime string
   applicantId: number | null;
+  jobId: number | null; // ID của job để navigate đến trang applicants
   jobTitle: string;
   companyName: string | null;
 }
@@ -48,13 +49,14 @@ export interface NotificationPaginatedResponse {
   hasPrevious: boolean;
 }
 
-// Response cho unread notifications (⭐ Giờ có pagination)
+// Response cho unread notifications - GIỐNG NotificationPaginatedResponse
 export interface UnreadNotificationsResponse {
   notifications: NotificationResponseDto[];
-  unreadCount: number;
   currentPage: number;
   totalPages: number;
+  totalItems: number;
   hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 // Response cho unread count
