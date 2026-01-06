@@ -103,11 +103,48 @@ export default function CreateJobPage() {
     };
 
     try {
-      await jobService.create(payload as any);
-      toast.success("Đăng việc thành công!");
-      navigate("/employerjob");
+      console.log("Submitting job payload:", payload);
+      const response = await jobService.create(payload as any);
+      console.log("Job created successfully:", response);
+      toast.success("Đăng việc thành công! Số dư đã được trừ.");
+      
+      // Reload trang để cập nhật số dư trong header
+      setTimeout(() => {
+        navigate("/employerjob");
+        window.location.reload();
+      }, 1000);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Không thể đăng việc");
+      console.error("❌ Create job error FULL:", error);
+      console.error("❌ Error response:", error.response);
+      console.error("❌ Error response data:", error.response?.data);
+      
+      // Xử lý các loại lỗi khác nhau - thử nhiều cách lấy message
+      let errorMessage = "Không thể đăng việc";
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data) {
+        errorMessage = typeof error.response.data === 'string' 
+          ? error.response.data 
+          : JSON.stringify(error.response.data);
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      console.log("📢 Final error message to display:", errorMessage);
+      
+      // Force hiển thị alert để chắc chắn user thấy
+      alert(errorMessage);
+      
+      // Và vẫn hiển thị toast
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 5000,
+        style: {
+          fontSize: "16px",
+          fontWeight: "bold",
+        }
+      });
     } finally {
       setLoading(false);
     }
@@ -148,7 +185,14 @@ export default function CreateJobPage() {
               required
             >
               {postTypeOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option 
+                  key={opt.value} 
+                  value={opt.value}
+                  style={{
+                    color: opt.value === "vip" ? "#ef4444" : "#1890ff",
+                    fontWeight: opt.value === "vip" ? 600 : 500,
+                  }}
+                >
                   {opt.label} ({opt.priceLabel})
                 </option>
               ))}
@@ -347,9 +391,9 @@ export default function CreateJobPage() {
             />
           </div>
 
-          {/* Status */}
+          {/* Status and Total Fee Row */}
           <div className={styles.formRow}>
-            <div className={styles.formGroup}>
+            <div className={styles.formGroup} style={{ maxWidth: 600 }}>
               <label className={styles.label}>Status</label>
               <input
                 type="text"
@@ -358,22 +402,25 @@ export default function CreateJobPage() {
                 value="Active"
                 disabled
                 readOnly
+                style={{ fontWeight: 600, background: '#f0f0f0', color: '#666' }}
               />
             </div>
-          </div>
 
-          {/* Tổng phí */}
-          {form.endAt && (
-            <div className={styles.totalFee}>
-              <span style={{ fontSize: "1.5rem", marginRight: 8 }}>💸</span>
-              <span style={{ fontWeight: 700, color: "#2563eb", fontSize: "1.1rem" }}>
-                Tổng phí:
-              </span>
-              <span style={{ fontWeight: 800, color: "#059669", fontSize: "1.5rem", marginLeft: 8 }}>
-                {calculateTotalFee()}$
-              </span>
-            </div>
-          )}
+            {/* Tổng phí */}
+            {form.endAt && (
+              <div className={styles.formGroup} style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                <div className={styles.totalFee}>
+                  <span style={{ fontSize: "1.5rem", marginRight: 8 }}>💸</span>
+                  <span style={{ fontWeight: 700, color: "#2563eb", fontSize: "1.1rem", letterSpacing: 1 }}>
+                    Tổng phí:
+                  </span>
+                  <span style={{ fontWeight: 800, color: "#059669", fontSize: "1.5rem", marginLeft: 8 }}>
+                    {calculateTotalFee()}$
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Submit buttons */}
           <div className={styles.formActions}>

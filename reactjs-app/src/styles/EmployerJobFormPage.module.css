@@ -1,67 +1,198 @@
-.formContainer {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  max-width: 720px;
-  margin: 2rem auto;
-  transition: all 0.3s ease;
+/* Container */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e6f0ff 100%);
+  padding: 2rem 1.5rem;
 }
 
-.formTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
+.formWrapper {
+  max-width: 1200px;
+  min-width: 400px;
+  margin: 0 auto;
+}
+
+.title {
+  margin-bottom: 2rem;
   text-align: center;
+  font-weight: bold;
+  color: #2a3b6a;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Form */
+.form {
+  background: white;
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.formRow {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
   color: #2d3748;
-}
-
-.formInput,
-.formTextarea,
-.formSelect {
-  width: 100%;
-  padding: 12px 16px;
-  margin-bottom: 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: #f9fafb;
   font-size: 0.95rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.formInput:focus,
-.formTextarea:focus,
-.formSelect:focus {
-  border-color: #3182ce;
-  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
-  outline: none;
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s;
   background: #fff;
 }
 
-.formTextarea {
-  min-height: 120px;
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.textarea {
+  min-height: 180px;
   resize: vertical;
+  font-family: inherit;
 }
 
-.formButton {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(135deg, #4f46e5, #3b82f6);
-  color: #fff;
+.muted {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+/* Post Type Info */
+.postTypeInfo {
+  margin-top: 0.8rem;
+  min-height: 32px;
+}
+
+.badge {
+  display: inline-block;
   font-size: 1rem;
-  font-weight: 600;
+  vertical-align: middle;
+  font-weight: 700;
   border-radius: 8px;
-  border: none;
+  padding: 0.5rem 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.description {
+  color: #6b7280;
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+}
+
+/* Salary Row */
+.salaryRow {
+  display: flex;
+  align-items: center;
+}
+
+/* Total Fee */
+.totalFee {
+  position: relative;
+  background: linear-gradient(90deg, #e0e7ff 0%, #f0fdfa 100%);
+  box-shadow: 0 2px 12px rgba(42, 59, 106, 0.13);
+  border-radius: 16px;
+  padding: 0.7rem 2rem;
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem auto;
+  max-width: 400px;
+}
+
+/* Form Actions */
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.cancelBtn,
+.submitBtn {
+  padding: 0.75rem 2.5rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s;
+  border: none;
+  min-width: 140px;
 }
 
-.formButton:hover {
-  background: linear-gradient(135deg, #4338ca, #2563eb);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
+.cancelBtn {
+  background: #fff;
+  color: #666;
+  border: 2px solid #d9d9d9;
 }
 
-.hiddenInput {
-  display: none;
+.cancelBtn:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
 }
+
+.submitBtn {
+  background: #1890ff;
+  color: white;
+  box-shadow: 0 2px 8px rgba(42, 59, 106, 0.2);
+}
+
+.submitBtn:hover {
+  background: #0c7cd5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(42, 59, 106, 0.3);
+}
+
+.submitBtn:disabled {
+  background: #d9d9d9;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .formRow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .cancelBtn,
+  .submitBtn {
+    width: 100%;
+  }
+}
+

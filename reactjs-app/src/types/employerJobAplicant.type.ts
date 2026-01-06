@@ -29,9 +29,10 @@ export type JobPosting = {
   requiredDegree: string;
   endAt: string;
   status: string;
+  postType?: string;
   createdAt: string;
   applicantsCount: number;
-   newApplicantsCount: number;
+  newApplicantsCount: number;
 };
 // export type PaginatedEmployeeListJobResponseDto = {
 //   data: JobPosting[];

@@ -60,15 +60,15 @@ const DepositHistoryPage: React.FC = () => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      width: 60,
+      width: 50,
     },
     {
       title: "Transaction Code",
       dataIndex: "txnRef",
       key: "txnRef",
-      width: 180,
+      width: 140,
       render: (text: string) => (
-        <Text copyable style={{ fontSize: 13, fontFamily: "monospace" }}>
+        <Text copyable style={{ fontSize: 12, fontFamily: "monospace" }}>
           {text}
         </Text>
       ),
@@ -77,9 +77,9 @@ const DepositHistoryPage: React.FC = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      width: 140,
+      width: 130,
       render: (amount: number) => (
-        <Text strong style={{ color: "#1890ff", fontSize: 15 }}>
+        <Text strong style={{ color: "#1890ff", fontSize: 14 }}>
           {formatCurrency(amount)} ₫
         </Text>
       ),
@@ -88,22 +88,22 @@ const DepositHistoryPage: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width: 130,
+      width: 100,
       render: (status: string) => getStatusTag(status),
     },
     {
       title: "Payment Info",
       dataIndex: "orderInfo",
       key: "orderInfo",
-      width: 200,
+      width: 150,
       ellipsis: true,
     },
     {
       title: "Time",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 160,
-      render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm:ss"),
+      width: 130,
+      render: (date: string) => dayjs(date).format("DD/MM/YYYY HH:mm"),
     },
   ];
 
@@ -173,7 +173,7 @@ const DepositHistoryPage: React.FC = () => {
               showSizeChanger: true,
               showTotal: (total) => `Total ${total} transactions`,
             }}
-            scroll={{ x: 1200 }}
+            scroll={{ x: 800 }}
             style={{ marginTop: 16 }}
           />
         </Space>
