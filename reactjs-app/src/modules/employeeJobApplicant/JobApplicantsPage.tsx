@@ -40,12 +40,24 @@ function ApplicantRow({
       </td>
       <td>{applicant.applicationStatus}</td>
       <td>
-        <button
-          className={styles.updateBtn}
-          onClick={() => onOpenModal(applicant)}
-        >
-          Update
-        </button>
+        {applicant.applicationStatus === 'HIRED' || applicant.applicationStatus === 'REJECTED' 
+          ? (
+            <span style={{ 
+              color: applicant.applicationStatus === 'HIRED' ? 'green' : 'red',
+              fontWeight: 'bold'
+            }}>
+              {applicant.applicationStatus}
+            </span>
+          )
+          : (
+            <button
+              className={styles.updateBtn}
+              onClick={() => onOpenModal(applicant)}
+            >
+              Update
+            </button>
+          )
+        }
       </td>
       <td>
         <button
@@ -249,7 +261,7 @@ export default function JobApplicantsPage() {
               ))}
             </select>
 
-            {status === "INTERVIEW" && (
+            {status === "INTERVIEW" && selectedApplicant.applicationStatus !== "INTERVIEW" && (
               <div className={styles.interviewForm}>
                 <input
                   type="datetime-local"
