@@ -145,7 +145,7 @@ const DashboardPage = () => {
   const statCards = [
     { title: "Users", value: stats.totalUsers, icon: "👤", color: "#4F8AFF" },
     { title: "Employers", value: stats.totalEmployers, icon: "🏢", color: "#6DD400" },
-    { title: "Candidates", value: stats.totalCandidates, icon: "🧑‍💼", color: "#FFC542" },
+    // { title: "Candidates", value: stats.totalCandidates, icon: "🧑‍💼", color: "#FFC542" },
     { title: "Job Postings", value: stats.totalJobPostings, icon: "📄", color: "#FF6B6B" },
     { title: "Applications", value: stats.totalApplications, icon: "📨", color: "#9B8AFC" },
   ];
@@ -157,10 +157,10 @@ const DashboardPage = () => {
       </Title>
 
       {/* Thẻ thống kê ngang */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+      <Row gutter={[24, 24]} style={{ marginBottom: 24 }} justify="space-evenly">
         {statCards.map(card => (
-          <Col key={card.title} xs={24} sm={12} md={8} lg={4}>
-            <Card style={{ textAlign: 'center', borderTop: `4px solid ${card.color}` }}>
+          <Col key={card.title} xs={24} sm={12} md={6} lg={6} xl={5}>
+            <Card style={{ textAlign: 'center', borderTop: `4px solid ${card.color}`, height: '100%' }}>
               <div style={{ fontSize: 32 }}>{card.icon}</div>
               <Title level={2} style={{ margin: 0 }}>{card.value}</Title>
               <Text type="secondary">{card.title}</Text>

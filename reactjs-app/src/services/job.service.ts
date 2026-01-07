@@ -13,7 +13,10 @@ export const jobService = {
 
   getDetail: async (id: number): Promise<JobPosting> => {
     const res = await apiClient.get<JobPosting>(`/job-postings/${id}`);
-    return res.data;
+    console.log("🔍 API Response:", res);
+    console.log("🔍 API Response Data:", res.data);
+    // Nếu res.data là undefined, return res (data nằm trực tiếp trong res)
+    return res.data || (res as any);
   },
 
   update: async (id: number, data: Partial<JobPosting>): Promise<JobPosting> => {
