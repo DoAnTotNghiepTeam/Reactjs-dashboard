@@ -7,18 +7,18 @@ import { useAuthStore } from "../../stores/useAuthorStore";
 const { Title, Text } = Typography;
 
 const DashboardPage = () => {
-  // Lấy thông tin user đã đăng nhập
+  // Lấy thông tin user đã đăng nhập chỉ cho role Admin và Employer 
   const loggedInUser = useAuthStore((state) => state.loggedInUser);
   const isAdmin = loggedInUser?.roles?.includes("Administrators"); // Sửa từ "ADMIN" thành "Administrators"
   const isEmployer = loggedInUser?.roles?.includes("Employers"); // Sửa từ "EMPLOYER" thành "Employers"
 
   // Debug: Log thông tin user
-  useEffect(() => {
-    console.log("Dashboard - loggedInUser:", loggedInUser);
-    console.log("Dashboard - loggedInUser.roles:", loggedInUser?.roles);
-    console.log("Dashboard - isAdmin:", isAdmin);
-    console.log("Dashboard - isEmployer:", isEmployer);
-  }, [loggedInUser, isAdmin, isEmployer]);
+  // useEffect(() => {
+  //   console.log("Dashboard - loggedInUser:", loggedInUser);
+  //   console.log("Dashboard - loggedInUser.roles:", loggedInUser?.roles);
+  //   console.log("Dashboard - isAdmin:", isAdmin);
+  //   console.log("Dashboard - isEmployer:", isEmployer);
+  // }, [loggedInUser, isAdmin, isEmployer]);
 
   // State cho thống kê admin
   const [stats, setStats] = useState({

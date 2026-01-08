@@ -30,8 +30,8 @@ export const applicantService = {
       },
     }
   );
-   console.log("👉 Response full:", res);
-  console.log("👉 Response data:", res.data);
+  //  console.log("👉 Response full:", res);
+  // console.log("👉 Response data:", res.data);
   return res; // ✅ trả về ApplicantResponse[]
 },
 
