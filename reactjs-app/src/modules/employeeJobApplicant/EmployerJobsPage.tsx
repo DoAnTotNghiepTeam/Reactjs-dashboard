@@ -22,7 +22,7 @@ export default function EmployerJobsPage() {
   const [loading, setLoading] = useState(false);
 
   const [page, setPage] = useState(1); // ✅ 1-based
-  const [pageSize] = useState(10);
+  const [pageSize] = useState(9);
   const [totalPages, setTotalPages] = useState(1);
 
   const [sortBy, setSortBy] = useState("createdAt");

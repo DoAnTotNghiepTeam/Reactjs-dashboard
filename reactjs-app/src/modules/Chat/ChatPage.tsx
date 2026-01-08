@@ -1,41 +1,83 @@
 import React, { useState } from "react";
 import SidebarApplicants from "./SidebarApplicants";
 import ChatBox from "./ChatBox";
-
-// Giả sử bạn lấy employerId từ context hoặc props
-// For testing use the employerId found in Firestore (e.g. 5)
-const employerId = "5"; // Thay bằng id thực tế của nhà tuyển dụng
-// currentUserId là id của nhà tuyển dụng hiện tại
-const currentUserId = employerId;
+import { useAuthStore } from "../../stores/useAuthorStore";
 
 const ChatPage: React.FC = () => {
+  // Lấy user ID từ auth store - QUAN TRỌNG cho bảo mật
+  const loggedInUser = useAuthStore((state) => state.loggedInUser);
+  const employerId = loggedInUser?.id ? String(loggedInUser.id) : null;
+  
+  // Kiểm tra xem user đã đăng nhập chưa
+  if (!employerId) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 'calc(100vh - 120px)',
+        background: '#f8fafc',
+        padding: 20
+      }}>
+        <div style={{
+          textAlign: 'center',
+          background: '#ffffff',
+          padding: 40,
+          borderRadius: 12,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+        }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
+          <div style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>
+            Vui lòng đăng nhập để sử dụng chat
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // selectedApplicant holds both id and optional name
   const [selectedApplicant, setSelectedApplicant] = useState<{ applicantId: string; applicantName?: string } | null>(null);
-  // Giả sử chatId là kết hợp employerId và applicantId
+  // chatId là kết hợp employerId và applicantId - đảm bảo mỗi employer có chat riêng
   const chatId = selectedApplicant ? `${employerId}_${selectedApplicant.applicantId}` : "";
 
   return (
     <div style={{
       display: "flex",
-      height: "80vh",
-      background: "linear-gradient(120deg, #f0f4ff 0%, #f8fafc 100%)",
-      borderRadius: 16,
-      boxShadow: "0 4px 24px #dbeafe",
-      padding: 16,
-      margin: 16,
-      border: '1.5px solid #e0e7ef',
-      minHeight: 500
+      gap: 16,
+      height: "calc(100vh - 120px)",
+      background: "#f8fafc",
+      padding: 20,
+      minHeight: 600
     }}>
-      <div style={{ width: 280, borderRight: "1.5px solid #e0e7ef", padding: 0, background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #e0e7ef', marginRight: 16 }}>
+      <div style={{ 
+        width: 360, 
+        flexShrink: 0,
+        height: '100%',
+        overflow: 'hidden'
+      }}>
         <SidebarApplicants employerId={employerId} onSelectApplicant={setSelectedApplicant} />
       </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", background: '#f8fafc', borderRadius: 12, boxShadow: '0 2px 8px #e0e7ef', padding: 0 }}>
+      <div style={{ 
+        flex: 1, 
+        height: '100%',
+        overflow: 'hidden'
+      }}>
         {selectedApplicant ? (
-          <ChatBox chatId={chatId} currentUserId={currentUserId} initialApplicantName={selectedApplicant.applicantName} />
+          <ChatBox chatId={chatId} currentUserId={employerId} initialApplicantName={selectedApplicant.applicantName} />
         ) : (
-          <div style={{ padding: 48, textAlign: "center", color: "#888", fontSize: 18 }}>
-            <div style={{marginBottom: 12, fontSize: 32}}>💬</div>
-            Chọn ứng viên để bắt đầu chat
+          <div style={{ 
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#ffffff',
+            borderRadius: 12,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+          }}>
+            <div style={{ textAlign: "center", color: "#94a3b8" }}>
+              <div style={{ fontSize: 64, marginBottom: 16 }}>💬</div>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>Chọn ứng viên để bắt đầu chat</div>
+            </div>
           </div>
         )}
       </div>

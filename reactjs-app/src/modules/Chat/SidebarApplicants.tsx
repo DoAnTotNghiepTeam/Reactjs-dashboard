@@ -10,6 +10,7 @@ interface Applicant {
   id: string;
   applicantId: string;
   applicantName?: string;
+  lastMessage?: string;
   lastTimestamp?: Timestamp;
   unreadForEmployer?: boolean;
 }
@@ -48,6 +49,7 @@ const SidebarApplicants: React.FC<SidebarApplicantsProps> = ({ employerId, onSel
         id: doc.id,
         applicantId: String(doc.data().applicantId),
         applicantName: doc.data().applicantName,
+        lastMessage: doc.data().lastMessage,
         lastTimestamp: doc.data().lastTimestamp,
         unreadForEmployer: !!doc.data().unreadForEmployer,
       }));
@@ -142,16 +144,67 @@ const SidebarApplicants: React.FC<SidebarApplicantsProps> = ({ employerId, onSel
   // Avatar mặc định (có thể thay bằng ảnh thật nếu có)
   const defaultAvatar = (
     <div style={{
-      width: 36, height: 36, borderRadius: '50%', background: '#e0e7ef',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, color: '#4a5568', fontSize: 18, marginRight: 12
+      width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, color: '#fff', fontSize: 20, marginRight: 12, flexShrink: 0, boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)'
     }}>
       <span role="img" aria-label="avatar">👤</span>
     </div>
   );
 
+  // Format thời gian hiển thị
+  const formatTime = (timestamp?: Timestamp) => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate();
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Vừa xong';
+    if (diffMins < 60) return `${diffMins} phút`;
+    if (diffHours < 24) return `${diffHours} giờ`;
+    if (diffDays < 7) return `${diffDays} ngày`;
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+  };
+
   return (
-    <div style={{background: '#f8fafc', borderRadius: 8, boxShadow: '0 2px 8px #e2e8f0', padding: 8, minWidth: 260}}>
-      {applicants.map(applicant => {
+    <div style={{
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      background: '#ffffff', 
+      borderRadius: 12, 
+      boxShadow: '0 4px 12px rgba(0,0,0,0.08)', 
+      overflow: 'hidden'
+    }}>
+      <div style={{
+        padding: '16px 16px 12px 16px',
+        borderBottom: '2px solid #e2e8f0',
+        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'
+      }}>
+        <h3 style={{ 
+          margin: 0, 
+          fontSize: 18, 
+          fontWeight: 700, 
+          color: '#1e293b' 
+        }}>
+          Tin nhắn
+        </h3>
+        <p style={{ 
+          margin: '4px 0 0 0', 
+          fontSize: 13, 
+          color: '#64748b' 
+        }}>
+          {applicants.length} cuộc trò chuyện
+        </p>
+      </div>
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: 12
+      }}>
+        {applicants.map(applicant => {
         const isActive = activeId === applicant.applicantId;
         return (
           <div
@@ -165,29 +218,48 @@ const SidebarApplicants: React.FC<SidebarApplicantsProps> = ({ employerId, onSel
               } catch (e) { console.error('Mark as read failed', e); }
             }}
             style={{
-              display: 'flex', alignItems: 'center', cursor: 'pointer',
-              padding: '10px 12px', marginBottom: 4, borderRadius: 6,
-              background: isActive ? '#e0e7ef' : applicant.unreadForEmployer ? '#fef9c3' : 'transparent',
-              border: isActive ? '1.5px solid #3b82f6' : applicant.unreadForEmployer ? '1.5px solid #facc15' : '1px solid #e5e7eb',
-              transition: 'background 0.2s, border 0.2s',
-              boxShadow: isActive ? '0 2px 8px #c7d2fe' : applicant.unreadForEmployer ? '0 2px 8px #fde68a' : undefined
+              display: 'flex', alignItems: 'flex-start', cursor: 'pointer',
+              padding: '14px 12px', marginBottom: 8, borderRadius: 10,
+              background: isActive ? 'linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%)' : applicant.unreadForEmployer ? '#fefce8' : '#f8fafc',
+              border: isActive ? '2px solid #6366f1' : applicant.unreadForEmployer ? '2px solid #fbbf24' : '1px solid #e2e8f0',
+              transition: 'all 0.2s ease',
+              boxShadow: isActive ? '0 4px 12px rgba(99, 102, 241, 0.2)' : applicant.unreadForEmployer ? '0 2px 8px rgba(251, 191, 36, 0.15)' : '0 1px 3px rgba(0,0,0,0.05)'
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = applicant.unreadForEmployer ? '#fef08a' : '#f1f5f9')}
-            onMouseLeave={e => (e.currentTarget.style.background = isActive ? '#e0e7ef' : applicant.unreadForEmployer ? '#fef9c3' : 'transparent')}
+            onMouseEnter={e => {
+              if (!isActive) e.currentTarget.style.background = applicant.unreadForEmployer ? '#fef9c3' : '#f1f5f9';
+            }}
+            onMouseLeave={e => {
+              if (!isActive) e.currentTarget.style.background = applicant.unreadForEmployer ? '#fefce8' : '#f8fafc';
+            }}
           >
             {defaultAvatar}
-            <div style={{flex: 1, minWidth: 0}}>
-              <div style={{fontWeight: 600, color: '#1e293b', fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                {applicant.applicantName || 'Chưa rõ tên'}
-                {applicant.unreadForEmployer && <span style={{marginLeft: 8, color: '#f59e42', fontSize: 13, fontWeight: 700}}>• Mới</span>}
+            <div style={{flex: 1, minWidth: 0, overflow: 'hidden'}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4}}>
+                <div style={{fontWeight: 700, color: '#1e293b', fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1}}>
+                  {applicant.applicantName || 'Chưa rõ tên'}
+                </div>
+                {applicant.lastTimestamp && (
+                  <div style={{fontSize: 12, color: '#94a3b8', marginLeft: 8, flexShrink: 0, fontWeight: 500}}>
+                    {formatTime(applicant.lastTimestamp)}
+                  </div>
+                )}
               </div>
-              <div style={{fontSize: 13, color: '#64748b', marginTop: 2}}>
-                ID: {applicant.applicantId}
+              <div style={{
+                fontSize: 14, 
+                color: applicant.unreadForEmployer ? '#64748b' : '#94a3b8', 
+                whiteSpace: 'nowrap', 
+                overflow: 'hidden', 
+                textOverflow: 'ellipsis',
+                fontWeight: applicant.unreadForEmployer ? 600 : 400,
+                lineHeight: '1.4'
+              }}>
+                {applicant.lastMessage || 'Chưa có tin nhắn'}
               </div>
             </div>
           </div>
         );
       })}
+      </div>
     </div>
   );
 };

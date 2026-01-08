@@ -21,9 +21,15 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatId, currentUserId, initialApplica
   const [input, setInput] = useState("");
   const [applicantName, setApplicantName] = useState<string | null>(null);
   const [maybeApplicantId, setMaybeApplicantId] = useState<string | null>(null);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
   // if parent provides an initial applicant name (from sidebar), use it immediately
   // we'll prefer the prop over the summary snapshot when rendering
+
+  // Auto scroll to bottom when messages change
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (!chatId) return;
@@ -39,6 +45,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatId, currentUserId, initialApplica
         timestamp: doc.data().timestamp,
       }));
       setMessages(list);
+      setTimeout(scrollToBottom, 100);
     });
     return () => unsubscribe();
   }, [chatId, initialApplicantName]);
@@ -123,68 +130,221 @@ const ChatBox: React.FC<ChatBoxProps> = ({ chatId, currentUserId, initialApplica
   
   setInput("");
 };
+
+  // Format time for messages
+  const formatMessageTime = (timestamp?: Timestamp | null) => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate();
+    const now = new Date();
+    
+    // Check if message is from today
+    const isToday = date.getDate() === now.getDate() &&
+                    date.getMonth() === now.getMonth() &&
+                    date.getFullYear() === now.getFullYear();
+    
+    if (isToday) {
+      // Only show time for today's messages
+      return date.toLocaleString('vi-VN', { 
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } else {
+      // Show date for messages from previous days
+      return date.toLocaleString('vi-VN', { 
+        day: '2-digit', 
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+  };
+
   // Avatar cho 2 phía
   const avatar = (isUser: boolean) => (
     <div style={{
-      width: 36, height: 36, borderRadius: '50%', background: isUser ? '#bae6fd' : '#e0e7ef',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, color: isUser ? '#0284c7' : '#64748b', fontSize: 18,
-      margin: isUser ? '0 0 0 10px' : '0 10px 0 0', flexShrink: 0
+      width: 40, height: 40, borderRadius: '50%', 
+      background: isUser ? 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)' : 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, 
+      color: '#fff', fontSize: 20,
+      margin: isUser ? '0 0 0 10px' : '0 10px 0 0', flexShrink: 0,
+      boxShadow: isUser ? '0 2px 8px rgba(59, 130, 246, 0.3)' : '0 2px 8px rgba(139, 92, 246, 0.3)'
     }}>
       <span role="img" aria-label="avatar">{isUser ? '🧑‍💼' : '👤'}</span>
     </div>
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <div style={{ padding: 16, borderBottom: "1.5px solid #e0e7ef", background: '#f1f5f9', borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-        <strong>Ứng viên: </strong>
-        {applicantName || maybeApplicantId || "(Không rõ)"}
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: '#ffffff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+      <div style={{ 
+        padding: '16px 20px', 
+        borderBottom: "2px solid #e2e8f0", 
+        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12
+      }}>
+        <div style={{
+          width: 44, height: 44, borderRadius: '50%',
+          background: 'linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#fff', fontSize: 20, flexShrink: 0,
+          boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)'
+        }}>
+          <span role="img" aria-label="avatar">👤</span>
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, fontSize: 17, color: '#1e293b' }}>
+            {applicantName || maybeApplicantId || "(Không rõ)"}
+          </div>
+          <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Ứng viên</div>
+        </div>
       </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: 16, background: '#f8fafc' }}>
+      <div style={{ 
+        flex: 1, 
+        overflowY: "auto", 
+        padding: '20px 16px', 
+        background: '#fafbfc',
+        backgroundImage: 'radial-gradient(circle at 20px 20px, #f1f5f9 1px, transparent 0)',
+        backgroundSize: '40px 40px'
+      }}>
         {messages.length === 0 && (
-          <div style={{textAlign: 'center', color: '#94a3b8', marginTop: 48, fontSize: 18}}>Chưa có tin nhắn nào</div>
+          <div style={{
+            textAlign: 'center', 
+            color: '#94a3b8', 
+            marginTop: 80, 
+            fontSize: 16,
+            fontWeight: 500
+          }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>💬</div>
+            Chưa có tin nhắn nào
+          </div>
         )}
-        {messages.map(msg => {
+        {messages.map((msg, index) => {
           const isUser = msg.senderId === currentUserId;
+          const showAvatar = index === 0 || messages[index - 1].senderId !== msg.senderId;
+          
           return (
             <div key={msg.id} style={{
-              display: 'flex', flexDirection: isUser ? 'row-reverse' : 'row', alignItems: 'flex-end', margin: '12px 0',
+              display: 'flex', 
+              flexDirection: isUser ? 'row-reverse' : 'row', 
+              alignItems: 'flex-end', 
+              marginBottom: showAvatar ? 16 : 6,
+              paddingLeft: !isUser && !showAvatar ? 50 : 0
             }}>
-              {avatar(isUser)}
-              <div style={{ maxWidth: '70%', minWidth: 60 }}>
-                <div style={{ fontSize: 12, color: '#64748b', marginBottom: 4, textAlign: isUser ? 'right' : 'left', fontWeight: 500 }}>
-                  {isUser ? 'Bạn' : (applicantName || maybeApplicantId || msg.senderId)}
+              {!isUser && showAvatar && (
+                <div style={{ width: 40, flexShrink: 0, margin: '0 10px 0 0' }}>
+                  {avatar(isUser)}
                 </div>
+              )}
+              <div style={{ maxWidth: '65%', minWidth: 80 }}>
+                {showAvatar && (
+                  <div style={{ 
+                    fontSize: 13, 
+                    color: '#64748b', 
+                    marginBottom: 6, 
+                    textAlign: isUser ? 'right' : 'left', 
+                    fontWeight: 600,
+                    paddingLeft: isUser ? 0 : 4,
+                    paddingRight: isUser ? 4 : 0
+                  }}>
+                    {isUser ? 'Bạn' : (applicantName || maybeApplicantId || msg.senderId)}
+                  </div>
+                )}
                 <div style={{
-                  background: isUser ? 'linear-gradient(120deg, #bae6fd 0%, #e0f2fe 100%)' : '#fff',
-                  color: '#0f172a',
-                  padding: '10px 16px',
-                  borderRadius: 16,
-                  borderBottomRightRadius: isUser ? 4 : 16,
-                  borderBottomLeftRadius: isUser ? 16 : 4,
-                  boxShadow: '0 2px 8px #e0e7ef',
+                  background: isUser 
+                    ? 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)' 
+                    : '#ffffff',
+                  color: isUser ? '#ffffff' : '#1e293b',
+                  padding: '12px 16px',
+                  borderRadius: 18,
+                  borderTopRightRadius: isUser ? (showAvatar ? 18 : 6) : 18,
+                  borderTopLeftRadius: isUser ? 18 : (showAvatar ? 18 : 6),
+                  borderBottomRightRadius: isUser ? 6 : 18,
+                  borderBottomLeftRadius: isUser ? 18 : 6,
+                  boxShadow: isUser 
+                    ? '0 3px 10px rgba(59, 130, 246, 0.3)' 
+                    : '0 2px 8px rgba(0, 0, 0, 0.08)',
                   fontSize: 15,
+                  lineHeight: 1.5,
                   wordBreak: 'break-word',
-                  textAlign: 'left',
-                  marginLeft: isUser ? 0 : 2,
-                  marginRight: isUser ? 2 : 0
+                  border: isUser ? 'none' : '1px solid #e2e8f0'
                 }}>
                   {msg.text}
                 </div>
+                {msg.timestamp && (
+                  <div style={{
+                    fontSize: 11,
+                    color: '#94a3b8',
+                    marginTop: 4,
+                    textAlign: isUser ? 'right' : 'left',
+                    paddingLeft: isUser ? 0 : 4,
+                    paddingRight: isUser ? 4 : 0
+                  }}>
+                    {formatMessageTime(msg.timestamp)}
+                  </div>
+                )}
               </div>
             </div>
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
-      <div style={{ display: "flex", padding: 16, borderTop: "1.5px solid #e0e7ef", background: '#f1f5f9', borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+      <div style={{ 
+        display: "flex", 
+        padding: '16px 20px', 
+        borderTop: "2px solid #e2e8f0", 
+        background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+        gap: 12
+      }}>
         <input
           value={input}
           onChange={e => setInput(e.target.value)}
-          style={{ flex: 1, padding: 12, borderRadius: 24, border: "1.5px solid #cbd5e1", fontSize: 15, outline: 'none', background: '#fff', boxShadow: '0 1px 4px #e0e7ef' }}
+          style={{ 
+            flex: 1, 
+            padding: '12px 18px', 
+            borderRadius: 24, 
+            border: "2px solid #e2e8f0", 
+            fontSize: 15, 
+            outline: 'none', 
+            background: '#fff', 
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+            transition: 'border 0.2s, box-shadow 0.2s'
+          }}
           placeholder="Nhập tin nhắn..."
           onKeyDown={e => { if (e.key === 'Enter') sendMessage(); }}
+          onFocus={e => {
+            e.target.style.borderColor = '#3b82f6';
+            e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+          }}
+          onBlur={e => {
+            e.target.style.borderColor = '#e2e8f0';
+            e.target.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)';
+          }}
         />
-        <button onClick={sendMessage} style={{ marginLeft: 12, padding: "10px 24px", borderRadius: 24, background: '#3b82f6', color: '#fff', fontWeight: 600, border: 'none', fontSize: 15, boxShadow: '0 2px 8px #c7d2fe', cursor: 'pointer', transition: 'background 0.2s' }}>
+        <button 
+          onClick={sendMessage} 
+          style={{ 
+            padding: "12px 28px", 
+            borderRadius: 24, 
+            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
+            color: '#fff', 
+            fontWeight: 700, 
+            border: 'none', 
+            fontSize: 15, 
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)', 
+            cursor: 'pointer', 
+            transition: 'all 0.2s',
+            flexShrink: 0
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.5)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+          }}
+        >
           Gửi
         </button>
       </div>
