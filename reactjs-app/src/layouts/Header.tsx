@@ -20,7 +20,8 @@ export default function CustomHeader() {
 
     useEffect(() => {
         const fetchUserBalance = async () => {
-            if (loggedInUser?.id) {
+            const isAdmin = loggedInUser?.roles?.includes("Administrators");
+            if (loggedInUser?.id && !isAdmin) {
                 try {
                     const response = await apiClient.get(`/users/${loggedInUser.id}`);
                     const userData = response.data || response;
@@ -31,7 +32,7 @@ export default function CustomHeader() {
             }
         };
         fetchUserBalance();
-    }, [loggedInUser?.id]);
+    }, [loggedInUser?.id, loggedInUser?.roles]);
 
     const formatBalance = (value: string) => {   // format chỗ này để có dấu , chỗ số dư 
         const num = parseFloat(value);
@@ -66,15 +67,19 @@ export default function CustomHeader() {
                             />
                             <div className="info text-left">
                                 <strong className="block">{loggedInUser?.username || "Steven Jobs"}</strong>
-                                <span className="role text-sm text-gray-500">Super Admin ▾</span>
-                                <div style={{ 
-                                    color: "#059669", 
-                                    fontWeight: 600, 
-                                    fontSize: "13px",
-                                    marginTop: "2px"
-                                }}>
-                                    {formatBalance(balance)} VND
-                                </div>
+                                <span className="role text-sm text-gray-500">
+                                    {loggedInUser?.roles?.includes("Administrators") ? "Super Admin" : "Super Employer"} ▾
+                                </span>
+                                {!loggedInUser?.roles?.includes("Administrators") && (
+                                    <div style={{ 
+                                        color: "#059669", 
+                                        fontWeight: 600, 
+                                        fontSize: "13px",
+                                        marginTop: "2px"
+                                    }}>
+                                        {formatBalance(balance)} VND
+                                    </div>
+                                )}
                             </div>
                         </Menu.Button>
 

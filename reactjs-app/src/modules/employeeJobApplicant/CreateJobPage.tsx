@@ -29,7 +29,7 @@ export default function CreateJobPage() {
   const loggedInUser = useAuthStore((state) => state.loggedInUser);
   const employerId = loggedInUser?.id;
 
-  const degreeOptions = ["Đại học", "Cao đẳng", "Trung cấp"];
+  const degreeOptions = ["Bachelor's Degree", "Associate's Degree", "Vocational Certificate", "No degree required"];
 
   const postTypeOptions = [
     {
